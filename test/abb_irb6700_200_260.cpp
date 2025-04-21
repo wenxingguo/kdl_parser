@@ -45,11 +45,17 @@ int main(int argc, char* argv[])
     std::cout << q0.data.transpose() << std::endl;
     std::cout << q0_inv.data.transpose() << std::endl;
 
-    // 雅可比举证
+    // 雅可比矩阵计算
     KDL::Jacobian J(6);
     std::shared_ptr<KDL::ChainJntToJacSolver> jac_solver(new KDL::ChainJntToJacSolver(abb_chain));
     jac_solver->JntToJac(q0, J);
     std::cout << J.data << std::endl;
+
+    // 计算Yoshikawa可操作性
+    double M;
+    Eigen::Matrix<double, 6, 6> JJT = J.data * J.data.transpose();
+    M = sqrt(JJT.determinant());
+    std::cout << M << std::endl;
 
     return 0;
 }
